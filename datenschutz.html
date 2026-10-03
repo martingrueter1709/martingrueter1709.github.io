@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datenschutzerklärung – Stagecut</title>
+<meta name="description" content="Wie Stagecut mit Creator-Daten, Plattform-Tokens und Videos umgeht.">
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="brand" href="index.html">Stagecut</a>
+  <div class="nav-links"><a class="pill" href="mailto:martin-grueter@web.de?subject=Stagecut%20access">Request access</a></div>
+</div></nav>
+<main class="narrow">
+<h1>Datenschutzerklärung</h1>
+<p class="lead">Stand: 3. Oktober 2026. English version: <a href="privacy.html">Privacy Policy</a>.</p>
+
+<div class="summary"><strong>Kurz gesagt.</strong> Stagecut macht aus deinen eigenen Gig-Videos Shorts und veröffentlicht sie auf deinen eigenen Konten. Es sieht nie deine Passwörter, veröffentlicht nichts, was nicht von dir ist, und verkauft oder teilt keine Daten. Deine Referenzfotos bleiben auf dem Rechner, auf dem Stagecut läuft. Du kannst den Zugriff jederzeit widerrufen und deine Daten löschen lassen. Die Details folgen unten.</div>
+<h2>1. Was der Dienst ist</h2>
+<p>Der Dienst ist eine von mir betriebene Desktop-Anwendung, die aus dem eigenen Gig-Material eines DJs kurze Hochformat-Videos erstellt und diese nach Zeitplan auf dem eigenen YouTube-, TikTok- und Instagram-Account dieses DJs veröffentlicht. Verarbeitet werden nur Daten von Creatorn, die den Dienst nutzen möchten und ihre Konten verbunden haben.</p>
+
+<h2>2. Welche Daten verarbeitet werden und wozu</h2>
+<ul>
+<li><strong>Autorisierungsdaten (Tokens).</strong> Beim Verbinden eines Kontos stellt die Plattform Zugriffs-/Refresh-Tokens aus. Sie dienen ausschließlich dem Veröffentlichen der Videos und, bei YouTube, dem Lesen der Aufrufstatistik des eigenen Kanals. Die Tokens liegen verschlüsselt im macOS-Schlüsselbund des Rechners, auf dem der Dienst läuft, und gehen an niemanden außer die ausstellende Plattform.</li>
+<li><strong>Grundlegende Kontoinformationen.</strong> Konto-/Kanalname bzw. Anzeigename (und, falls von der Plattform geliefert, Profilbild), damit die App anzeigen kann, welches Konto verbunden ist.</li>
+<li><strong>Videos und Metadaten.</strong> Die eigenen Gig-Videos des Creators und die dazu erzeugten Titel/Beschreibungen. Die Videos werden lokal auf dem Betreiber-Rechner verarbeitet und nur auf das vom Creator verbundene Plattform-Konto hochgeladen.</li>
+<li><strong>Referenzfotos und Erkennungsdaten.</strong> Um den Creator (bzw. seine Maske) im Material zu finden, stellt der Creator Referenzfotos bereit. Die Erkennung läuft lokal auf dem Betreiber-Rechner. Fotos und daraus abgeleitete Erkennungsdaten werden nie hochgeladen, nie weitergegeben und nie anderweitig genutzt. Sie werden freiwillig bereitgestellt und können jederzeit auf Anfrage gelöscht werden.</li>
+<li><strong>Beispiele zum Schreibstil.</strong> Frühere Titel und Beschreibungen, die der Creator bereitstellt und die analysiert werden, damit neue Texte in seiner eigenen Sprache formuliert sind. Sie liegen auf dem Betreiber-Rechner und werden, wie in Abschnitt 3 beschrieben, als Text in Anfragen an das KI-Modell eingebunden.</li>
+<li><strong>Veröffentlichungsverlauf.</strong> Welches Video wann auf welcher Plattform mit welchem Titel veröffentlicht wurde, plus technischer Status (z. B. Fehler), damit nichts doppelt gepostet wird.</li>
+</ul>
+
+<h2>3. Empfänger und Auftragsverarbeiter</h2>
+<ul>
+<li><strong>Die Plattformen selbst</strong> (Google/YouTube, TikTok, Meta/Instagram) erhalten das Video samt Beschreibung, das der Creator veröffentlichen will.</li>
+<li><strong>Anthropic (Claude API).</strong> Titel und Beschreibungen werden von einem KI-Modell erzeugt. Übermittelt wird nur Text: der Dateiname eines Videos, ggf. vom Creator eingegebene Textangaben, eine Auswahl früherer Titel und Beschreibungen des Creators (damit neue Texte zu seinem Schreibstil passen) sowie bereits verwendete Titel (um Wiederholungen zu vermeiden). Videos, Bilder und Referenzfotos werden nie übermittelt.</li>
+<li><strong>Cloudflare (temporärer Tunnel, nur Instagram).</strong> Die Veröffentlichungsschnittstelle von Instagram kann ein Video nur von einer öffentlichen Webadresse abrufen. Für die wenigen Minuten, die eine Veröffentlichung dauert, wird das Video über einen zufällig benannten, temporären Cloudflare-Tunnel-Link bereitgestellt, der danach wieder geschlossen wird.</li>
+<li>Es erfolgt kein Verkauf von Daten, keine Weitergabe zu Werbezwecken und kein Profiling.</li>
+</ul>
+
+<h2>4. Rechtsgrundlagen</h2>
+<p>Einwilligung des Creators (Art. 6 Abs. 1 lit. a DSGVO; für Referenzfotos zur Erkennung des Creators ausdrückliche Einwilligung nach Art. 9 Abs. 2 lit. a DSGVO, soweit dies als biometrische Daten gilt) sowie Vertragserfüllung (Art. 6 Abs. 1 lit. b). Die Einwilligung kann jederzeit mit Wirkung für die Zukunft widerrufen werden.</p>
+
+<h2>5. Speicherdauer und Löschung</h2>
+<p>Daten werden nur so lange gespeichert, wie der Creator den Dienst nutzt. Auf Anfrage oder beim Trennen des Kontos werden Tokens, Referenzfotos, Erkennungsdaten, gespeicherte Videos und Veröffentlichungsverlauf unverzüglich gelöscht (in der Regel binnen 14 Tagen). Bereits veröffentlichte Inhalte unterliegen der jeweiligen Plattform und werden dort vom Creator gelöscht.</p>
+
+<h2 id="delete-data">6. Zugriff trennen und Daten löschen lassen</h2>
+<ol>
+<li><strong>Zugriff jederzeit selbst widerrufen:</strong> Google: <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a> &middot; TikTok: Einstellungen und Datenschutz &rarr; Sicherheit &amp; Berechtigungen &rarr; Apps und Dienste &middot; Instagram: Einstellungen &rarr; Apps und Websites.</li>
+<li><strong>Löschung beantragen:</strong> E-Mail an <a href="mailto:martin-grueter@web.de">martin-grueter@web.de</a> von der Adresse, mit der du dich verbunden hast. Alle oben beschriebenen Daten werden gelöscht, die Löschung wird dir per E-Mail bestätigt.</li>
+</ol>
+
+<h2>7. Deine Rechte</h2>
+<p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, eine Einwilligung jederzeit zu widerrufen. Kontakt: <a href="mailto:martin-grueter@web.de">martin-grueter@web.de</a>. Beschwerden kannst du an eine Aufsichtsbehörde richten; zuständig ist die Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen, Düsseldorf.</p>
+
+<h2>8. Google / YouTube API Services</h2>
+<p>Der Dienst nutzt die YouTube API Services. Mit der Nutzung für YouTube stimmst du den <a href="https://www.youtube.com/t/terms">YouTube-Nutzungsbedingungen</a> zu; siehe auch die <a href="https://policies.google.com/privacy">Google-Datenschutzerklärung</a>. Nutzung und Weitergabe von Informationen aus Google-APIs entsprechen der <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a> einschließlich der Limited-Use-Anforderungen. Den Zugriff kannst du unter <a href="https://security.google.com/settings/security/permissions">security.google.com/settings/security/permissions</a> widerrufen.</p>
+
+<h2>9. TikTok und Meta</h2>
+<p>Beim Verbinden von TikTok oder Instagram gelten zusätzlich deren Nutzungsbedingungen und Datenschutzerklärungen (<a href="https://www.tiktok.com/legal/page/eea/privacy-policy/en">TikTok</a>, <a href="https://privacycenter.instagram.com/policy">Instagram</a>). Von diesen Plattformen erhaltene Informationen werden ausschließlich genutzt, um deine Inhalte wie von dir autorisiert auf deinem eigenen Konto zu veröffentlichen.</p>
+
+<h2>10. Diese Website</h2>
+<p>Diese Website verwendet keine Cookies, keine Analyse-Tools und keine Tracker Dritter. Wie jeder Webserver kann der Hosting-Anbieter technische Zugriffsdaten (z. B. IP-Adresse, Zeitpunkt, abgerufene Seite) zu Sicherheits- und Betriebszwecken protokollieren. Hosting-Anbieter: GitHub Pages (GitHub, Inc., San Francisco, USA).</p>
+
+<h2>11. Änderungen</h2>
+<p>Ändert sich der Dienst so, dass diese Erklärung betroffen ist, wird sie hier aktualisiert und das Datum oben angepasst.</p>
+<h2>12. Verantwortlicher</h2>
+<p>Martin Grüter, Siegmundstraße 7, 50739 Köln &middot; <a href="mailto:martin-grueter@web.de">martin-grueter@web.de</a>. Verantwortlicher im Sinne der DSGVO für den unten beschriebenen Dienst („Dienst“).</p>
+
+
+</main>
+<footer><div class="foot">
+  <a href="privacy.html">Privacy Policy</a><a href="datenschutz.html">Datenschutz (DE)</a><a href="terms.html">Terms of Service</a><a href="impressum.html">Impressum</a><br>
+  Responsible for this service: Martin Grüter, Siegmundstraße 7, 50739 Köln, Germany &middot; <a href="mailto:martin-grueter@web.de">martin-grueter@web.de</a><br>
+  &copy; 2026 Stagecut
+</div></footer>
+</body>
+</html>
