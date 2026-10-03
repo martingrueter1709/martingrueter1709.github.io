@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload your videos – Stagecut</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="style.css">
+<style>
+  .drop { border: 1.5px dashed var(--line); border-radius: 22px; padding: 56px 24px; text-align: center; cursor: pointer; transition: background .15s, border-color .15s; }
+  .drop.over { background: var(--soft); border-color: var(--muted); }
+  .drop strong { display: block; font-size: 1.3rem; letter-spacing: -.02em; margin-bottom: 6px; }
+  .drop span { color: var(--muted); }
+  .consent { display: flex; gap: 12px; align-items: flex-start; margin: 22px 0; color: var(--muted); font-size: 15px; }
+  .consent input { margin-top: 5px; width: 18px; height: 18px; accent-color: #fff; }
+  .file { background: var(--soft); border-radius: 14px; padding: 14px 16px; margin: 10px 0; }
+  .file .row { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; }
+  .file .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file .state { color: var(--muted); white-space: nowrap; }
+  .bar { height: 4px; background: var(--line); border-radius: 4px; margin-top: 10px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--fg); transition: width .2s; }
+  .err { color: #ff8a80; }
+  .ok { color: #fff; }
+  #msg { margin-top: 18px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="brand" href="index.html">Stagecut</a>
+  <div class="nav-links"></div>
+</div></nav>
+
+<main class="narrow">
+  <h1 id="title">Upload your videos</h1>
+  <p class="lead" id="lead">Drop in your gig videos, or ZIP files with your videos. Stagecut takes it from here. Please keep this page open until every file shows "done".</p>
+
+  <div id="invalid" class="hidden"><p class="err">This upload link isn't valid. Please ask Martin for a new one.</p></div>
+
+  <div id="app" class="hidden">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose videos to upload">
+      <strong>Drop videos here</strong>
+      <span>or click to choose files &middot; videos (.mp4, .mov, .m4v) or .zip files of videos</span>
+    </div>
+    <input id="picker" type="file" accept=".mp4,.mov,.m4v,.zip,video/mp4,video/quicktime,application/zip" multiple hidden>
+
+    <label class="consent">
+      <input type="checkbox" id="consent">
+      <span>These videos are my own, I have the rights to publish them, and I'm okay with Stagecut processing them and posting them on my accounts. See the <a href="privacy.html">Privacy Policy</a>.</span>
+    </label>
+
+    <div id="list"></div>
+    <p id="msg" class="lead"></p>
+  </div>
+</main>
+
+<footer><div class="foot">
+  <a href="privacy.html">Privacy Policy</a><a href="datenschutz.html">Datenschutz (DE)</a><a href="terms.html">Terms of Service</a><br>
+  Contact: <a href="mailto:martin-grueter@web.de">martin-grueter@web.de</a> &middot; &copy; 2026 Stagecut <a class="tiny" href="impressum.html">Impressum</a>
+</div></footer>
+
+<script>
+const API = "https://stagecut-inbox.stagecut-inbox.workers.dev";
+const token = new URLSearchParams(location.search).get("dj") || "";
+const $ = id => document.getElementById(id);
+let cfg = null;
+
+function fmt(bytes) {
+  if (bytes >= 1e9) return (bytes / 1e9).toFixed(2) + " GB";
+  return Math.max(1, Math.round(bytes / 1e6)) + " MB";
+}
+const q = p => `${API}${p}${p.includes("?") ? "&" : "?"}dj=${encodeURIComponent(token)}`;
+
+async function init() {
+  if (!token) return $("invalid").classList.remove("hidden");
+  try {
+    const r = await fetch(q("/upload/whoami"));
+    if (!r.ok) throw new Error();
+    cfg = await r.json();
+  } catch {
+    return $("invalid").classList.remove("hidden");
+  }
+  if (cfg.name) $("title").textContent = `Hi ${cfg.name}, upload your videos`;
+  $("app").classList.remove("hidden");
+}
+
+const drop = $("drop"), picker = $("picker");
+drop.addEventListener("click", () => picker.click());
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); picker.click(); } });
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => handle(e.dataTransfer.files));
+picker.addEventListener("change", () => { handle(picker.files); picker.value = ""; });
+
+let queue = Promise.resolve();
+function handle(files) {
+  if (!$("consent").checked) {
+    $("msg").innerHTML = '<span class="err">Please tick the box first, then add your videos.</span>';
+    return;
+  }
+  $("msg").textContent = "";
+  for (const f of files) queue = queue.then(() => uploadOne(f));
+}
+
+function addRow(file) {
+  const el = document.createElement("div");
+  el.className = "file";
+  el.innerHTML = '<div class="row"><span class="name"></span><span class="state">waiting…</span></div><div class="bar"><i></i></div>';
+  el.querySelector(".name").textContent = `${file.name} (${fmt(file.size)})`;
+  $("list").appendChild(el);
+  return { state: el.querySelector(".state"), bar: el.querySelector(".bar i") };
+}
+
+async function withRetry(fn, tries = 4) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try { return await fn(); } catch (e) { last = e; await new Promise(r => setTimeout(r, 1000 * 2 ** i)); }
+  }
+  throw last;
+}
+
+async function uploadOne(file) {
+  const ui = addRow(file);
+  try {
+    ui.state.textContent = "starting…";
+    const start = await withRetry(async () => {
+      const r = await fetch(q("/upload/start"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ filename: file.name, size: file.size, type: file.type }) });
+      const j = await r.json();
+      if (!r.ok) { const e = new Error(j.error || "failed"); e.fatal = true; throw e; }
+      return j;
+    }, 2);
+    const partSize = cfg.partBytes;
+    const total = Math.ceil(file.size / partSize);
+    const parts = [];
+    for (let i = 0; i < total; i++) {
+      const blob = file.slice(i * partSize, Math.min(file.size, (i + 1) * partSize));
+      const done = await withRetry(async () => {
+        const r = await fetch(q(`/upload/part?key=${encodeURIComponent(start.key)}&uploadId=${encodeURIComponent(start.uploadId)}&part=${i + 1}`), { method: "PUT", body: blob });
+        if (!r.ok) throw new Error("part failed");
+        return r.json();
+      });
+      parts.push(done);
+      ui.bar.style.width = ((i + 1) / total * 100).toFixed(1) + "%";
+      ui.state.textContent = Math.round((i + 1) / total * 100) + "%";
+    }
+    await withRetry(async () => {
+      const r = await fetch(q("/upload/complete"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: start.key, uploadId: start.uploadId, parts }) });
+      if (!r.ok) throw new Error("complete failed");
+    });
+    ui.state.textContent = "done ✓";
+    ui.state.className = "state ok";
+  } catch (e) {
+    ui.state.textContent = e.fatal ? e.message : "failed – please try again";
+    ui.state.className = "state err";
+  }
+}
+
+window.addEventListener("beforeunload", e => {
+  if (document.querySelector(".file .state:not(.ok):not(.err)")) { e.preventDefault(); e.returnValue = ""; }
+});
+init();
+</script>
+</body>
+</html>
